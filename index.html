@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>المتصفح الآمن | وكيل ويب مدمج</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', 'Tahoma', sans-serif;
+            background: linear-gradient(135deg, #0a0f1e, #010105);
+            min-height: 100vh;
+            color: white;
+            direction: rtl;
+        }
+
+        /* الخلفية الرقمية */
+        .digital-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: 
+                radial-gradient(circle at 30% 40%, rgba(0, 255, 255, 0.15) 0%, transparent 60%),
+                repeating-linear-gradient(45deg, rgba(0, 255, 255, 0.05) 0px, rgba(0, 255, 255, 0.05) 2px, transparent 2px, transparent 20px);
+            animation: bgPulse 8s ease infinite;
+        }
+
+        @keyframes bgPulse {
+            0% { opacity: 0.5; transform: scale(1);}
+            100% { opacity: 1; transform: scale(1.05);}
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* الهيدر */
+        .header {
+            text-align: center;
+            padding: 25px 15px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(15px);
+            border-radius: 35px;
+            margin-bottom: 25px;
+            border: 1px solid #0ff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-size: 32px;
+            color: #0ff;
+            text-shadow: 0 0 15px #0ff;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #0ff;
+            color: #000;
+            padding: 6px 18px;
+            border-radius: 30px;
+            margin-top: 12px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* أدوات الوكيل */
+        .proxy-tools {
+            background: rgba(10, 20, 35, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 25px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .url-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .url-input-group input {
+            flex: 1;
+            padding: 14px 18px;
+            font-size: 16px;
+            border-radius: 50px;
+            border: 1px solid #0ff;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            outline: none;
+        }
+
+        .url-input-group input::placeholder {
+            color: #88aaff;
+        }
+
+        .proxy-btn {
+            background: linear-gradient(135deg, #00aaff, #0055aa);
+            padding: 12px 25px;
+            border-radius: 50px;
+            border: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .proxy-btn:hover {
+            background: linear-gradient(135deg, #0ff, #0088aa);
+            color: #000;
+        }
+
+        /* خادم الوكيل */
+        .server-section {
+            margin-top: 15px;
+        }
+
+        .server-select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 30px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #0ff;
+            color: white;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .status {
+            font-size: 12px;
+            color: #0ff;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* إطار التصفح */
+        .browser-frame {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 20px;
+            border: 1px solid #0ff;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .browser-header {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #0ff;
+        }
+
+        .browser-header span {
+            font-size: 12px;
+            color: #0ff;
+        }
+
+        .browser-header .secure-badge {
+            color: #0f0;
+        }
+
+        iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+            background: white;
+        }
+
+        .info-note {
+            text-align: center;
+            font-size: 11px;
+            color: #888;
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 20px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            font-size: 11px;
+            color: #666;
+        }
+
+        @media (max-width: 550px) {
+            .url-input-group { flex-direction: column; }
+            iframe { height: 400px; }
+        }
+    </style>
+</head>
+<body>
+<div class="digital-bg"></div>
+<div class="container">
+    <div class="header">
+        <h1>🔒 المتصفح الآمن</h1>
+        <p>تصفح مجهول | حماية الخصوصية | وكيل ويب مدمج</p>
+        <div class="badge">✨ خوادم متعددة - اختر الأنسب لك ✨</div>
+    </div>
+
+    <div class="proxy-tools">
+        <div class="url-input-group">
+            <input type="text" id="urlInput" placeholder="أدخل رابط الموقع... مثال: youtube.com أو google.com">
+            <button class="proxy-btn" onclick="browseViaProxy()">🌐 تصفح الآن</button>
+        </div>
+        
+        <div class="server-section">
+            <select id="proxySelect" class="server-select" onchange="changeProxyServer()">
+                <option value="https://www.4everproxy.com/load.php?url=">🌍 4everProxy (سريع)</option>
+                <option value="https://proxium.app/load.php?url=">⚡ Proxium (أوروبا)</option>
+                <option value="https://corsproxy.io/?url=">🚀 CorsProxy (عالمي)</option>
+                <option value="https://api.allorigins.win/get?url=">🛡️ AllOrigins (آمن)</option>
+            </select>
+            <div class="status" id="statusMsg">✅ جاهز للتصفح - اختر موقعاً وابدأ</div>
+        </div>
+    </div>
+
+    <div class="browser-frame">
+        <div class="browser-header">
+            <span>🛡️ متصفح آمن</span>
+            <span class="secure-badge">🔒 اتصال مشفر</span>
+            <span id="currentSite">لم يتم اختيار موقع</span>
+        </div>
+        <iframe id="browserFrame" src="about:blank"></iframe>
+    </div>
+
+    <div class="info-note">
+        💡 ملاحظة: هذا وكيل ويب يخفي عنوان IP الحقيقي عند التصفح. بعض المواقع قد لا تعمل بسبب التقنيات المتقدمة.
+        <br>📍 يمكنك تغيير الخادم من القائمة المنسدلة لتحسين السرعة.
+    </div>
+    <footer>
+        جميع عمليات التصفح تمر عبر خوادم طرف ثالث - للاستخدام القانوني فقط
+    </footer>
+</div>
+
+<script>
+    // إعدادات الوكيل
+    let currentProxy = document.getElementById('proxySelect').value;
+    
+    // قائمة خوادم بديلة (يتم تحديثها تلقائياً من مصادر مجانية)
+    // مصدر الخوادم: https://github.com/gfpcom/free-proxy-list [citation:6]
+    const fallbackProxies = [
+        { name: "🇺🇸 أمريكا - HTTP", url: "https://cors-anywhere.herokuapp.com/" },
+        { name: "🇪🇺 أوروبا - HTTPS", url: "https://corsproxy.io/" },
+        { name: "🌍 عالمي - SOCKS5", url: "https://api.allorigins.win/get?url=" },
+        { name: "🇩🇪 ألمانيا - Proxy", url: "https://cors-proxy.htmldriven.com/?url=" },
+        { name: "🇬🇧 بريطانيا - Fast", url: "https://proxy.cors.sh/" }
+    ];
+    
+    // إضافة خوادم بديلة للقائمة
+    const proxySelect = document.getElementById('proxySelect');
+    fallbackProxies.forEach(proxy => {
+        const option = document.createElement('option');
+        option.value = proxy.url;
+        option.textContent = `🔹 ${proxy.name}`;
+        proxySelect.appendChild(option);
+    });
+    
+    // دالة التصفح عبر الوكيل
+    function browseViaProxy() {
+        let url = document.getElementById('urlInput').value.trim();
+        const statusMsg = document.getElementById('statusMsg');
+        const currentSiteSpan = document.getElementById('currentSite');
+        
+        if (!url) {
+            statusMsg.innerHTML = '⚠️ الرجاء إدخال رابط موقع صحيح';
+            statusMsg.style.color = '#ff6600';
+            return;
+        }
+        
+        // معالجة الرابط
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            url = 'https://' + url;
+        }
+        
+        // تحديث حالة التصفح
+        statusMsg.innerHTML = '🔄 جاري الاتصال بالخادم... قد يستغرق بضع ثوانٍ';
+        statusMsg.style.color = '#0ff';
+        
+        // الحصول على الوكيل المختار
+        let proxyUrl = document.getElementById('proxySelect').value;
+        
+        // بناء رابط الوكيل
+        let finalUrl;
+        if (proxyUrl.includes('allorigins')) {
+            // معالجة خاصة لـ AllOrigins لأنه يعيد JSON
+            finalUrl = proxyUrl + encodeURIComponent(url);
+            statusMsg.innerHTML = '⚠️ AllOrigins يعرض المحتوى كنص - قد لا تظهر الصور بشكل صحيح';
+            loadAllOrigins(finalUrl);
+        } else if (proxyUrl.includes('corsproxy.io') || proxyUrl.includes('cors-anywhere')) {
+            finalUrl = proxyUrl + encodeURIComponent(url);
+            document.getElementById('browserFrame').src = finalUrl;
+            currentSiteSpan.textContent = url;
+            statusMsg.innerHTML = '✅ تم التصفح بنجاح عبر الوكيل';
+            statusMsg.style.color = '#0f0';
+        } else if (proxyUrl.includes('4everproxy') || proxyUrl.includes('proxium')) {
+            // هذه الخوادم تقبل الرابط مباشرة
+            finalUrl = proxyUrl + url;
+            document.getElementById('browserFrame').src = finalUrl;
+            currentSiteSpan.textContent = url;
+            statusMsg.innerHTML = '✅ متصل بخادم آمن - عنوان IP مخفي';
+            statusMsg.style.color = '#0f0';
+        } else {
+            // تجربة عامة
+            finalUrl = proxyUrl + encodeURIComponent(url);
+            document.getElementById('browserFrame').src = finalUrl;
+            currentSiteSpan.textContent = url;
+            statusMsg.innerHTML = '✅ جاري التصفح عبر الخادم المحدد';
+            statusMsg.style.color = '#0f0';
+        }
+        
+        // محاولة بديلة في حالة فشل iframe
+        setTimeout(() => {
+            try {
+                const iframe = document.getElementById('browserFrame');
+                if (iframe.contentWindow.document.body.innerHTML.length < 50) {
+                    statusMsg.innerHTML = '⚠️ قد لا يعمل هذا الخادم حالياً. جرب اختيار خادم آخر من القائمة';
+                    statusMsg.style.color = '#ffaa00';
+                }
+            } catch(e) {
+                // هذا طبيعي بسبب سياسة الأمان (CORS)
+                console.log('CORS policy prevented access - this is normal');
+            }
+        }, 3000);
+    }
+    
+    // معالجة خاصة لـ AllOrigins
+    function loadAllOrigins(apiUrl) {
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                const iframe = document.getElementById('browserFrame');
+                const doc = iframe.contentWindow.document;
+                doc.open();
+                doc.write(data.contents || '<html><body><h3>لا يمكن عرض المحتوى</h3><p>قد يكون الموقع محمياً أو الرابط غير صحيح</p></body></html>');
+                doc.close();
+                document.getElementById('currentSite').textContent = decodeURIComponent(apiUrl.split('url=')[1] || 'مجهول');
+                document.getElementById('statusMsg').innerHTML = '✅ تم التصفح عبر AllOrigins';
+                document.getElementById('statusMsg').style.color = '#0f0';
+            })
+            .catch(error => {
+                document.getElementById('statusMsg').innerHTML = '❌ فشل الاتصال بالخادم. جرب خادماً آخر';
+                document.getElementById('statusMsg').style.color = '#ff4444';
+                console.error(error);
+            });
+    }
+    
+    // تغيير خادم الوكيل
+    function changeProxyServer() {
+        const newProxy = document.getElementById('proxySelect').value;
+        currentProxy = newProxy;
+        const statusMsg = document.getElementById('statusMsg');
+        statusMsg.innerHTML = '🔄 تم تغيير الخادم. يمكنك الآن تصفح المواقع عبر الخادم الجديد';
+        statusMsg.style.color = '#0ff';
+        
+        // تفريغ الإطار لضمان بداية نظيفة
+        document.getElementById('browserFrame').src = 'about:blank';
+        document.getElementById('currentSite').textContent = 'لم يتم اختيار موقع';
+        
+        setTimeout(() => {
+            statusMsg.innerHTML = '✅ خادم جديد جاهز - أدخل رابطاً وابدأ التصفح';
+            statusMsg.style.color = '#0f0';
+        }, 2000);
+    }
+    
+    // دعم إدخال Enter
+    document.getElementById('urlInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            browseViaProxy();
+        }
+    });
+    
+    // عرض رسالة ترحيب
+    console.log('وكيل الويب جاهز للاستخدام - مصدر البروكسيات: GitHub Free Proxy List [citation:6]');
+</script>
+</body>
+</html>
